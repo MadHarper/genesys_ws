@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 type WsServer struct {
+	id         string
 	clients    map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
@@ -10,8 +11,9 @@ type WsServer struct {
 }
 
 // NewWebsocketServer creates a new WsServer type
-func NewWebsocketServer() *WsServer {
+func NewWebsocketServer(id string) *WsServer {
 	return &WsServer{
+		id:         id,
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
@@ -38,13 +40,9 @@ func (server *WsServer) Run() {
 }
 
 func (server *WsServer) broadcastToClients(message []byte) {
-	// до сюда доходит
 	fmt.Println(len(server.clients))
 	for client := range server.clients {
-		fmt.Println(message)
-		fmt.Println(client)
 		client.send <- message
-		fmt.Println("11112")
 	}
 }
 
